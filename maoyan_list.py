@@ -17,21 +17,25 @@ def get_one_page(url,headers):
 
 def parse_one_page(html):
     html = etree.HTML(html)
+    img_href = html.xpath('//*[@id="app"]/div/div/div/dl/dd/a/img[2]/@data-src')
     ranking = html.xpath('//dd/i/text()')
     film_name = html.xpath('//dd/div/div/div[1]/p[1]/a/text()')
     to_star = html.xpath('//dd/div/div/div[1]/p[2]/text()')
     score_one = html.xpath('//dd/div/div/div[2]/p/i[1]/text()')
     score_two = html.xpath('//dd/div/div/div[2]/p/i[2]/text()')
     release_time = html.xpath('//dd/div/div/div[1]/p[3]/text()')
-    for ran,film,start,one,two,release in zip(ranking,film_name,to_star,score_one,score_two,release_time):
+    for img,ran,film,start,one,two,release in zip(img_href,ranking,film_name,to_star,score_one,score_two,release_time):
         data = {
+            'logo':img,
             '排名':ran,
             '电影':film,
             '主演': start.strip(),
             '评分': one+two,
             '上映时间': release
         }
+        print(data)
         yield  {
+            'logo': data['logo'],
             '排名':data['排名'],
             '电影':data['电影'],
             '评分': data['评分'],
