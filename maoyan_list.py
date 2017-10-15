@@ -1,4 +1,5 @@
 from requests.exceptions import RequestException
+from multiprocessing import Pool
 import requests
 from lxml import etree
 import json
@@ -38,8 +39,8 @@ def parse_one_page(html):
             '上映时间': data['上映时间'][5:],
         }
 
-def main():
-    url = 'http://maoyan.com/board'
+def main(offset):
+    url = 'http://maoyan.com/board/4?offset={0}'.format(offset)
     headers = {
         'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36'
     }
@@ -53,32 +54,5 @@ def writefile(content):
         f.close()
 
 if __name__ == '__main__':
-    main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    pool = Pool()
+    pool.map(main,[i*10 for i in range(10)])
